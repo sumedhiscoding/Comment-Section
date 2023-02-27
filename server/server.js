@@ -26,6 +26,36 @@ app.get("/posts", async (req, res) => {
       })
     )
   })
+  app.get("/posts/:id", async (req, res) => {
+    return await commitToDb(
+      prisma.post.findUnique({
+        where:{
+          id:req.params.id
+        },
+        select: {
+          id: true,
+          title: true,
+          body:true,
+          comment:{
+            orderBy:{
+              createdAt: "desc"
+            },
+            select:{
+              id:true,
+              message:true,
+              parentId:true,
+              createdAt:true,
+              user:{
+                id: true,
+                name: true,
+
+              }
+            }
+          }
+        },
+      })
+    )
+  })
 
 
 async function commitToDb(promise){
